@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "C:\Users\Khaled 2\Desktop\myprogramminglang\coder_writer.py", line 112, in write_scene_to_kh
+    for o in objects:
+             ^^^^^^^
+NameError: name 'objects' is not defined. Did you mean: 'object'?

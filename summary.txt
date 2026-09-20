@@ -1,0 +1,271 @@
+--- ai_agent.py ---
+Function: ask_claude
+  Docstring: يقوم بقراءة أكواد المحرك (interpreter.py و graphics.py) ليفهم اللغة،
+ويرسل الطلب مع الكود المكتوب في المحرر إلى Claude 3 Haiku ليرجع كود .kh
+
+--- ambient_occlusion.py ---
+Module docstring: ambient_occlusion.py
+=====================
+نظام Ambient Occlusion بسيط للمشاهد ثلاثية الأبعاد.
+
+الطريقة:
+  - لكل وجه من أوجه كل مكعب، نرمي أشعة عشوائية في نصف كرة باتجاه النورمال
+  - إذا اصطدم شعاع بمكعب آخر → يزيد التظليل
+  - معامل AO الناتج يُطبَّق كتعديل على اللون عند الرسم
+
+الاستخدام:
+  from ambient_occlusion import AOBaker
+  baker = AOBaker(num_samples=32, max_distance=4.0)
+  baker.bake(objects)        # يُحسب مرة واحدة قبل حلقة الرندر
+Function: _dot
+Function: _cross
+Function: _normalize
+Function: _ray_hits_aabb
+  Docstring: اختبار تقاطع شعاع (slab method) مع صندوق محيطي.
+يُعيد True إذا تقاطع الشعاع في المسافة (0, max_dist).
+Function: _build_tangent_frame
+  Docstring: يبني إطار (tangent, bitangent, normal) لتحويل العيّنات.
+Function: _hemisphere_samples
+  Docstring: يولّد عيّنات موزّعة بتوزيع جيب التمام (cosine-weighted)
+في نصف الكرة باتجاه normal.
+Class: AOBaker
+  Docstring: يحسب Ambient Occlusion لكل مكعب في المشهد مرة واحدة قبل الرندر.
+
+المعاملات:
+  num_samples  : عدد الأشعة لكل وجه (أكثر = أدق وأبطأ)
+  max_distance : أقصى مسافة يؤثر فيها مكعب على AO مكعب آخر
+  strength     : قوة تأثير AO (0.0 = لا تأثير، 1.0 = تأثير كامل)
+  Method: __init__
+  Method: bake
+  Method: _build_aabbs
+
+--- extract.py ---
+Function: extract_info
+
+--- fix_split.py ---
+
+
+--- graphics.py ---
+Class: Cube
+  Method: __init__
+  Method: __repr__
+Class: CustomModel
+  Method: __init__
+  Method: __repr__
+Class: Square2D
+  Method: __init__
+  Method: __repr__
+Class: Circle2D
+  Method: __init__
+  Method: __repr__
+Class: Triangle2D
+  Method: __init__
+  Method: __repr__
+Class: Custom2D
+  Method: __init__
+  Method: __repr__
+Class: Sphere
+  Method: __init__
+  Method: __repr__
+Class: Plane
+  Method: __init__
+  Method: __repr__
+Class: Pyramid
+  Method: __init__
+  Method: __repr__
+Class: Cylinder
+  Method: __init__
+  Method: __repr__
+Class: Capsule
+  Method: __init__
+  Method: __repr__
+Class: Light
+  Method: __init__
+Class: Sound
+  Method: __init__
+  Method: تشغيل
+  Method: تشغيل
+Class: GraphicsEngine
+  Method: __init__
+  Method: create_light
+  Method: create_sound
+  Method: set_sky
+  Method: draw_cube
+  Method: draw_custom
+  Method: create_window
+  Method: create_cube
+  Method: create_sphere
+  Method: create_plane
+  Method: create_pyramid
+  Method: create_cylinder
+  Method: create_capsule
+  Method: create_custom
+  Method: create_square_2d
+  Method: create_circle_2d
+  Method: create_triangle_2d
+  Method: create_custom_2d
+  Method: draw_cube
+  Method: draw_sphere
+  Method: draw_plane
+  Method: draw_pyramid
+  Method: draw_cylinder
+  Method: draw_capsule
+  Method: draw_custom
+  Method: check_collisions
+  Method: run
+
+--- interpreter.py ---
+Class: BreakLoop
+Class: Interpreter
+  Method: __init__
+  Method: _split_args
+  Method: get_value
+  Method: evaluate
+  Method: execute_line
+  Method: evaluate_condition
+  Method: parse_blocks
+  Method: execute_blocks
+  Method: execute
+
+--- keyboard.py ---
+Module docstring: keyboard.py
+============
+كائن لوحة المفاتيح — يُستخدَم في لغة .kh للوصول إلى حالة الأزرار.
+
+كل خاصية هي boolean:
+  True  = المفتاح مضغوط الآن
+  False = المفتاح غير مضغوط
+
+الاستخدام في .kh:
+  كل_فريم:
+    اطبع كيبورد.مسافة
+    اطبع كيبورد.w
+    اطبع كيبورد.يسار
+Class: Keyboard
+  Method: __init__
+  Method: update
+  Method: __repr__
+
+--- kh.py ---
+
+
+--- math_types.py ---
+Class: Vector2
+  Method: __init__
+  Method: __repr__
+  Method: __eq__
+Class: Vector3
+  Method: __init__
+  Method: __repr__
+  Method: __eq__
+Class: Color
+  Method: __init__
+  Method: __repr__
+  Method: __eq__
+
+--- model_loader.py ---
+Class: OBJMesh
+  Method: __init__
+Function: load_obj
+
+--- mouse.py ---
+Module docstring: mouse.py
+=========
+كائن الماوس — يُستخدَم في لغة .kh للوصول إلى حالة الماوس.
+
+الخصائص المتاحة في كود .kh:
+  ماوس.x            → موقع X بالبكسل (float)
+  ماوس.y            → موقع Y بالبكسل (float)
+  ماوس.scroll       → عجلة التمرير (float، تُعاد للصفر كل إطار)
+  ماوس.ضغط_يسار    → زر الماوس الأيسر مضغوط؟ (True/False)
+  ماوس.ضغط_يمين    → زر الماوس الأيمن مضغوط؟ (True/False)
+Class: Mouse
+  Method: __init__
+  Method: __repr__
+
+--- patch_graphics.py ---
+
+
+--- patch_graphics_2.py ---
+
+
+--- patch_js_log.py ---
+
+
+--- patch_ui2.py ---
+
+
+--- patch_ui2_floating.py ---
+
+
+--- rigidbody.py ---
+Class: PhysicsEngine
+  Method: __init__
+  Method: _get_aabb_3d
+  Method: _get_aabb_2d
+  Method: _check_overlap
+  Method: _resolve_collision_3d
+  Method: _resolve_collision_2d
+  Method: update_physics
+
+--- run_ui_test.py ---
+
+
+--- textures.py ---
+Function: load_texture
+
+--- ui.py ---
+Module docstring: ui.py  —  KH Engine IDE
+========================
+بيئة تطوير متكاملة للغة .kh
+Class: AIWorker
+  Method: __init__
+  Method: run
+Class: KHHighlighter
+  Method: __init__
+  Method: highlightBlock
+Class: LineNumbers
+  Method: __init__
+  Method: sizeHint
+  Method: paintEvent
+Class: CodeEditor
+  Method: __init__
+  Method: _gutter_width
+  Method: _update_gutter_width
+  Method: _update_gutter
+  Method: resizeEvent
+  Method: _paint_gutter
+  Method: _highlight_line
+  Method: keyPressEvent
+Class: Console
+  Method: __init__
+  Method: _write
+  Method: out
+  Method: err
+  Method: info
+  Method: success
+Class: KHIde
+  Method: __init__
+  Method: _apply_palette
+  Method: _build_toolbar
+  Method: _build_central
+  Method: _send_ai_prompt
+  Method: _on_ai_finished
+  Method: _panel_header
+  Method: _toggle_fullscreen
+  Method: _build_statusbar
+  Method: _update_cursor
+  Method: _set_status
+  Method: _mark_dirty
+  Method: _clear_dirty
+  Method: new_file
+  Method: open_file
+  Method: save_file
+  Method: run_code
+  Method: stop_code
+  Method: _on_stdout
+  Method: _on_stderr
+  Method: _on_finished
+  Method: keyPressEvent
+Function: main
+
